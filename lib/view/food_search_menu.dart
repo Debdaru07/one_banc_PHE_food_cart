@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../helpers/helper_widget.dart';
-import '../model/food_model.dart';
 import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
 import '../view_model/item_fetch_vm.dart';
-import 'food_details/food_details_page.dart';
 import 'helper_widget.dart';
 
 class FoodDeliveryListing extends StatefulWidget {

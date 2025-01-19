@@ -1,6 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:munch/service/common_post_api_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../helpers/helper_widget.dart';
+import '../model/request_models/item_details_request_body_mode.l.dart';
 import '../model/response_models/item_list_model.dart';
+import '../view_model/item_fetch_vm.dart';
 
 class CuisinesAccordion extends StatelessWidget {
   final List<Cuisines> foodList;
@@ -70,21 +77,37 @@ class _AccordionCardState extends State<AccordionCard> {
                     itemCount: widget.food.items?.length,
                     itemBuilder: (context, index) {
                       final item = widget.food.items![index];
-                      Widget main = ListTile(
-                        leading: Image.network(
-                          item.imageUrl ?? '',
-                          width: 60,
-                          height: 60,
-                          errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                      Widget main = InkWell(
+                        onTap: () async { 
+                          Future.delayed(Duration.zero, () async {
+                            var result = await showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                              builder: (context) => FractionallySizedBox(
+                                heightFactor: 0.75,
+                                child: CommonBottomSheet(
+                                  item: item
+                                )
+                              ),
+                            );
+                          });
+                        },
+                        child: ListTile(
+                          leading: Image.network(
+                            item.imageUrl ?? '',
+                            width: 60,
+                            height: 60,
+                            errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                          ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(item.name ?? 'No name'),
+                              Text('${item.rating ?? ''} ⭐'),
+                            ],
+                          ),
+                          subtitle: Text('Price: ${item.price ?? 'N/A'}'),
                         ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(item.name ?? 'No name'),
-                            Text('${item.rating ?? ''} ⭐'),
-                          ],
-                        ),
-                        subtitle: Text('Price: ${item.price ?? 'N/A'}'),
                       );
                       return Column(
                         children: [
@@ -98,6 +121,56 @@ class _AccordionCardState extends State<AccordionCard> {
               ],
             ),
         ],
+      ),
+    );
+  }
+}
+
+class CommonBottomSheet extends StatefulWidget {
+  final Items item;
+  const CommonBottomSheet({ Key? key, required this.item }) : super(key: key);
+
+  @override
+  _CommonBottomSheetState createState() => _CommonBottomSheetState();
+}
+
+class _CommonBottomSheetState extends State<CommonBottomSheet> {
+
+  @override
+  void initState() {
+    super.initState();
+    final foodItemsVM = Provider.of<FoodItemsVM>(context, listen: false);
+    int value = int.parse(widget.item.id ?? '');
+    Future.delayed(Duration.zero, () async {
+      await foodItemsVM.getItemById(ItemListDetailsRequestBodyModel(itemId: value));
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<FoodItemsVM>(
+      builder: (context, viewModel, _) => SafeArea(
+        child: Scaffold(
+          body: Visibility(
+            visible: viewModel.state == RequestState.completed,
+            replacement: const FoodLoader(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(viewModel.itemDetails?.cuisineName ?? '', style: Theme.of(context).textTheme.headlineMedium),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ class MakePaymentResponseModel {
   String? timestamp;
   String? requesterIp;
   String? timetaken;
+  String? taxRefNumber;
 
   MakePaymentResponseModel(
       {this.responseCode,
@@ -14,7 +15,8 @@ class MakePaymentResponseModel {
       this.errorDetails,
       this.timestamp,
       this.requesterIp,
-      this.timetaken});
+      this.timetaken,
+      this.taxRefNumber});
 
   MakePaymentResponseModel.fromJson(Map<String, dynamic> json) {
     responseCode = json['response_code'];
@@ -24,6 +26,7 @@ class MakePaymentResponseModel {
     timestamp = json['timestamp'];
     requesterIp = json['requester_ip'];
     timetaken = json['timetaken'];
+    taxRefNumber = json['txn_ref_no'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +38,7 @@ class MakePaymentResponseModel {
     data['timestamp'] = this.timestamp;
     data['requester_ip'] = this.requesterIp;
     data['timetaken'] = this.timetaken;
+    data['txn_ref_no'] = taxRefNumber;
     return data;
   }
 }

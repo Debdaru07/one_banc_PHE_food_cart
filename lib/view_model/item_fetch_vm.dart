@@ -3,6 +3,7 @@ import '../app_url.dart';
 import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
+import 'search_food_view_model.dart';
 
 class FoodItemsVM extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -20,6 +21,14 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  ViewType _viewType = ViewType.grid;
+  ViewType get viewType => _viewType;
+
+  void toggleViewType() {
+    _viewType = _viewType == ViewType.grid ? ViewType.list : ViewType.grid;
+    notifyListeners();
+  }
+
   void _updateState(RequestState newState, {String errorMessage = ''}) {
     _state = newState;
     _errorMessage = errorMessage;
@@ -28,6 +37,7 @@ class FoodItemsVM extends ChangeNotifier {
 
   Future<void> fetchItemList(ItemListRequestModel requestModel) async {
     var url = AppUrl().itemsEndPointURL;
+    _updateState(RequestState.loading);
     try {
       final response = await _apiService.postRequest<ItemListRequestModel, ItemsListModel>(
         url: url,

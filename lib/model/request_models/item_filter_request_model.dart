@@ -1,0 +1,44 @@
+class ItemsFilterRequestModel {
+  List<String>? cuisineType;
+  PriceRange? priceRange;
+  int? minRating;
+
+  ItemsFilterRequestModel({this.cuisineType, this.priceRange, this.minRating});
+
+  ItemsFilterRequestModel.fromJson(Map<String, dynamic> json) {
+    cuisineType = json['cuisine_type'].cast<String>();
+    priceRange = json['price_range'] != null
+        ? new PriceRange.fromJson(json['price_range'])
+        : null;
+    minRating = json['min_rating'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['cuisine_type'] = this.cuisineType;
+    if (this.priceRange != null) {
+      data['price_range'] = this.priceRange?.toJson();
+    }
+    data['min_rating'] = this.minRating;
+    return data;
+  }
+}
+
+class PriceRange {
+  int? minAmount;
+  int? maxAmount;
+
+  PriceRange({this.minAmount, this.maxAmount});
+
+  PriceRange.fromJson(Map<String, dynamic> json) {
+    minAmount = json['min_amount'];
+    maxAmount = json['max_amount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['min_amount'] = this.minAmount;
+    data['max_amount'] = this.maxAmount;
+    return data;
+  }
+}

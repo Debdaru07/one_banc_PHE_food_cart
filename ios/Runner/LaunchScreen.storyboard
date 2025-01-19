@@ -1,0 +1,16 @@
+<scene sceneID="sceneID">
+    <objects>
+        <view contentMode="scaleToFill" id="viewID">
+            <imageView id="imageViewID" userInteractionEnabled="NO" contentMode="scaleAspectFill">
+                <image name="splash.png" />
+                <rect key="frame" x="0.0" y="0.0" width="375" height="667" />
+            </imageView>
+            <constraints>
+                <constraint firstItem="imageViewID" firstAttribute="centerX" secondItem="viewID" secondAttribute="centerX" id="constraintID1" />
+                <constraint firstItem="imageViewID" firstAttribute="centerY" secondItem="viewID" secondAttribute="centerY" id="constraintID2" />
+                <constraint firstItem="imageViewID" firstAttribute="width" secondItem="viewID" secondAttribute="width" multiplier="1" id="constraintID3" />
+                <constraint firstItem="imageViewID" firstAttribute="height" secondItem="viewID" secondAttribute="height" multiplier="1" id="constraintID4" />
+            </constraints>
+        </view>
+    </objects>
+</scene>

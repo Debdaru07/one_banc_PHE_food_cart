@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../helpers/helper_widget.dart';
 import '../model/food_model.dart';
+import '../model/request_models/item_list_request_body_model.dart';
+import '../view_model/item_fetch_vm.dart';
 import '../view_model/search_food_view_model.dart';
-import 'cart_checkout.dart';
 import 'food_details/food_details_page.dart';
 
 class FoodDeliveryListing extends StatefulWidget {
@@ -15,92 +15,112 @@ class FoodDeliveryListing extends StatefulWidget {
 }
 
 class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
+
+  @override
+  initState() {
+    super.initState();
+    final foodItemsVM = Provider.of<FoodItemsVM>(context, listen: false);
+    Future.delayed(Duration.zero, () async => await foodItemsVM.fetchItemList(ItemListRequestModel(page: 1, count: 10)));
+  }
+
   TextEditingController controller = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
-    return  Consumer<FoodViewModel>(
-      builder: (context, viewModel, child) {
-        final foodList = viewModel.filteredFoodList.isNotEmpty ? viewModel.filteredFoodList : viewModel.foodItems;
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.yellow[200],
-            title: SingleChildScrollView(
-              child: Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  TextField(
-                    controller: controller,
-                    onChanged: (val) { 
-                      viewModel.searchFood(controller.text);
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(color: Colors.grey ),
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.search,color: Colors.grey,),
-                    ),
-                  ),
-                  Visibility(
-                    visible: controller.text.isNotEmpty,
-                    child: IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.grey),
-                      onPressed: () {
-                        controller.clear();
-                        viewModel.searchFood('');
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),),
-          body: 
-            foodList.isEmpty? const Center(child: Text('No items found'))
-              : viewModel.loading == true ? const FoodLoader() 
-                : viewType(viewModel, foodList),
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (viewModel.cartItems.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Stack(
-                  clipBehavior: Clip.none, 
-                  children: [
-                    FloatingActionButton(
-                      heroTag: 'cartCheckoutButton',
-                      onPressed: () async {
-                        await Navigator.push( context, MaterialPageRoute( builder: (context) => const CartCheckout(), ),);
-                      },
-                      backgroundColor: Colors.orange,
-                      child: const Icon(CupertinoIcons.shopping_cart, color: Colors.white),
-                    ),
-                    if (viewModel.cartItems.isNotEmpty) 
-                    Positioned( right: -6, top: -6,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text('${viewModel.cartItems.length}', style: const TextStyle( color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold, ),),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              FloatingActionButton(
-                onPressed: () => viewModel.toggleViewType(),
-                backgroundColor: Colors.orange,
-                tooltip: viewModel.viewType == ViewType.grid ? "Switch to List View" : "Switch to Grid View",
-                child: Icon(viewModel.viewType == ViewType.grid ? Icons.view_list : Icons.grid_view,color: Colors.white,),
-              ),
-            ],
+    return Consumer<FoodItemsVM>(
+      builder: (c, viewModel, _) {
+        return SafeArea(
+          child: Scaffold(
+            body: Center(child: Text('${viewModel.itemsListModel?.totalPages}')),
           ),
         );
-      } 
+      }
     );
+    
+    
+    
+    // Consumer<FoodViewModel>(
+    //   builder: (context, viewModel, child) {
+    //     final foodList = viewModel.filteredFoodList.isNotEmpty ? viewModel.filteredFoodList : viewModel.foodItems;
+    //     return Scaffold(
+    //       backgroundColor: Colors.white,
+    //       appBar: AppBar(
+    //         backgroundColor: Colors.yellow[200],
+    //         title: SingleChildScrollView(
+    //           child: Stack(
+    //             alignment: Alignment.centerRight,
+    //             children: [
+    //               TextField(
+    //                 controller: controller,
+    //                 onChanged: (val) { 
+    //                   viewModel.searchFood(controller.text);
+    //                 },
+    //                 decoration: const InputDecoration(
+    //                   hintText: 'Search...',
+    //                   hintStyle: TextStyle(color: Colors.grey ),
+    //                   border: InputBorder.none,
+    //                   prefixIcon: Icon(Icons.search,color: Colors.grey,),
+    //                 ),
+    //               ),
+    //               Visibility(
+    //                 visible: controller.text.isNotEmpty,
+    //                 child: IconButton(
+    //                   icon: const Icon(Icons.clear, color: Colors.grey),
+    //                   onPressed: () {
+    //                     controller.clear();
+    //                     viewModel.searchFood('');
+    //                   },
+    //                 ),
+    //               )
+    //             ],
+    //           ),
+    //         ),),
+    //       body: 
+    //         foodList.isEmpty? const Center(child: Text('No items found'))
+    //           : viewModel.loading == true ? const FoodLoader() 
+    //             : viewType(viewModel, foodList),
+    //       floatingActionButton: Column(
+    //         mainAxisAlignment: MainAxisAlignment.end,
+    //         children: [
+    //           if (viewModel.cartItems.isNotEmpty)
+    //           Padding(
+    //             padding: const EdgeInsets.symmetric(vertical: 12.0),
+    //             child: Stack(
+    //               clipBehavior: Clip.none, 
+    //               children: [
+    //                 FloatingActionButton(
+    //                   heroTag: 'cartCheckoutButton',
+    //                   onPressed: () async {
+    //                     await Navigator.push( context, MaterialPageRoute( builder: (context) => const CartCheckout(), ),);
+    //                   },
+    //                   backgroundColor: Colors.orange,
+    //                   child: const Icon(CupertinoIcons.shopping_cart, color: Colors.white),
+    //                 ),
+    //                 if (viewModel.cartItems.isNotEmpty) 
+    //                 Positioned( right: -6, top: -6,
+    //                   child: Container(
+    //                     padding: const EdgeInsets.all(5),
+    //                     decoration: const BoxDecoration(
+    //                       color: Colors.white,
+    //                       shape: BoxShape.circle,
+    //                     ),
+    //                     child: Text('${viewModel.cartItems.length}', style: const TextStyle( color: Colors.orange, fontSize: 12, fontWeight: FontWeight.bold, ),),
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //           FloatingActionButton(
+    //             onPressed: () => viewModel.toggleViewType(),
+    //             backgroundColor: Colors.orange,
+    //             tooltip: viewModel.viewType == ViewType.grid ? "Switch to List View" : "Switch to Grid View",
+    //             child: Icon(viewModel.viewType == ViewType.grid ? Icons.view_list : Icons.grid_view,color: Colors.white,),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   } 
+    // );
   }
 
   void ontapHandler(Food food) async { 

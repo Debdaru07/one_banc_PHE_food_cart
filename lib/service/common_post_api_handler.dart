@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import '../helpers/constants.dart';
@@ -26,12 +27,12 @@ class ApiService {
       'Content-Type': 'application/json',
       'X-Partner-API-Key': '${Constants().client_key}',
     });
-
+    log('url :- $url');
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
-        body: jsonEncode(toJson(requestBody)),
+        body: jsonEncode(toJson(requestBody)), // jsonEncode(
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -42,6 +43,7 @@ class ApiService {
         return Future.error(response.body);
       }
     } catch (e) {
+      log('error :- $e');
       _setState(RequestState.error, errorMessage: e.toString());
       return Future.error(e);
     }

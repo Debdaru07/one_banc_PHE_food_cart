@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'view/food_search_menu.dart';
+import 'view_model/item_fetch_vm.dart';
 import 'view_model/search_food_view_model.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => FoodViewModel()),
+        ChangeNotifierProvider(create: (_) => FoodItemsVM()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

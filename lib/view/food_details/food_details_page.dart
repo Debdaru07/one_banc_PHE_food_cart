@@ -1,116 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import '../../model/response_models/item_details_model.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../../helpers/snackbar_bottom.dart';
-import '../../model/food_model.dart';
-import '../../view_model/search_food_view_model.dart';
+class ItemDetailsWidget extends StatefulWidget {
+  final ItemDetailsResponseModel itemDetails;
 
-class FoodDetails extends StatefulWidget {
-  final Food food;
-  const FoodDetails({super.key, required this.food});
+  const ItemDetailsWidget({Key? key, required this.itemDetails}) : super(key: key);
 
   @override
-  State<FoodDetails> createState() => _FoodDetailsState();
+  State<ItemDetailsWidget> createState() => _ItemDetailsWidgetState();
 }
 
-class _FoodDetailsState extends State<FoodDetails> {
-  var description = "This mouth-watering dish combines a hearty chickpea patty with fresh lettuce, juicy tomatoes, and a tangy vegan mayo. Topped with crisp onions and served on a toasted whole-grain bun, it's a wholesome and satisfying meal packed with flavor";
-  
+class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
+  bool isAddedToCart = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Image.asset(
-                widget.food.thumNailAssetPath,
-                width: double.infinity,
-                height: 170,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  widget.food.name,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange
-                  ),
-                ),
-                const SizedBox(width: 10,),
-                Icon(Icons.circle,color: Colors.grey[800],size: 8),
-                const SizedBox(width: 2,),
-                Text(
-                  '\$${widget.food.price}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[700]
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(description, maxLines: 4,style: TextStyle(fontSize: 14, color: Colors.grey[700], ),),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(Icons.store_outlined,color: Colors.yellow[800],size: 25,),
-                const SizedBox(width: 2,),
-                Text(widget.food.businessName, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500,color: Colors.grey[900], ) ),
-                const SizedBox(width: 8,),
-                Icon(Icons.circle,color: Colors.grey[900],size: 5),
-                const SizedBox(width: 4,),
-                Text('5 km away', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal,color: Colors.grey[700], ) )
-              ]
-            ),
-            const Spacer(),
-            Consumer<FoodViewModel>(
-              builder: (context, viewModel, child) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async =>  { viewModel.setCartItems(widget.food), Navigator.pop(context), showCustomSnackbar(context, text: 'Added to cart')},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      ),
-                      child: const Text( 'Add to Cart', style: TextStyle(color: Colors.black),),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        showCustomSnackbar(context, text: 'Order placed successfully');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.yellow[700],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      ),
-                      child: const Text('Order', style: TextStyle(color: Colors.white),),
-                    ),
-                  ],
-                );
-              }
-            ),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(widget.itemDetails.itemImageUrl ?? ''),
+          SizedBox(height: 16.0),
+          Text(
+            'Cuisine: ${widget.itemDetails.cuisineName}',
+            style: TextStyle(
+              fontSize: 14.0,
+              color: Colors.grey,
+            ),
+          ),
+          SizedBox(height: 8.0),
+          Text(
+            widget.itemDetails.itemName ?? '',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8.0),
+          RatingBar.builder(
+            initialRating: widget.itemDetails.itemRating ?? 0,
+            minRating: 1,
+            direction: Axis.horizontal,
+            itemCount: 5,
+            itemSize: 20,
+            itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (rating) {
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text( '₹ ${widget.itemDetails.itemPrice}', style: TextStyle( fontSize: 35.0, fontWeight: FontWeight.bold)),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isAddedToCart = !isAddedToCart;
+                  });
+                  // Handle add to cart logic here
+                },
+                child: Text(isAddedToCart ? 'Added' : 'Add to Cart'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIngredientChip(String ingredient) {
+    return Chip(
+      label: Text(ingredient),
+      backgroundColor: Colors.grey[200],
     );
   }
 }

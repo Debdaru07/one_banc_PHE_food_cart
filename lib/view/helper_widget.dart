@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 
 import '../helpers/helper_widget.dart';
 import '../model/request_models/item_details_request_body_mode.l.dart';
+import '../model/response_models/item_details_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../view_model/item_fetch_vm.dart';
+import 'food_details/food_details_page.dart';
 
 class CuisinesAccordion extends StatelessWidget {
   final List<Cuisines> foodList;
@@ -84,7 +86,7 @@ class _AccordionCardState extends State<AccordionCard> {
                               context: context,
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
                               builder: (context) => FractionallySizedBox(
-                                heightFactor: 0.75,
+                                heightFactor: 1,
                                 child: CommonBottomSheet(
                                   item: item
                                 )
@@ -152,23 +154,12 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
     return Consumer<FoodItemsVM>(
       builder: (context, viewModel, _) => SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Visibility(
             visible: viewModel.state == RequestState.completed,
             replacement: const FoodLoader(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(viewModel.itemDetails?.cuisineName ?? '', style: Theme.of(context).textTheme.headlineMedium),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
+            child: 
+              ItemDetailsWidget(itemDetails: viewModel.itemDetails ?? ItemDetailsResponseModel(),)
           ),
         ),
       ),

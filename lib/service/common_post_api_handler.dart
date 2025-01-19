@@ -35,7 +35,7 @@ class ApiService {
         body: jsonEncode(toJson(requestBody)), // jsonEncode(
       );
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (response. statusCode >= 200 && response.statusCode < 300) {
         _setState(RequestState.completed);
         return fromJson(jsonDecode(response.body));
       } else {

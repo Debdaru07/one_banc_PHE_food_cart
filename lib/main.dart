@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'view/food_search_menu.dart';
 import 'view_model/search_food_view_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load();
+  // await dotenv.load(fileName: ".env");
   await Future.delayed(const Duration(seconds: 2)); 
   runApp(const MyApp());
 }

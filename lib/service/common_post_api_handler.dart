@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../helpers/constants.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 enum RequestState { loading, completed, error }
 
@@ -22,7 +24,7 @@ class ApiService {
     
     headers.addAll({
       'Content-Type': 'application/json',
-      'X-Partner-API-Key': dotenv.env['X_PARTNER_API_KEY'] ?? '',
+      'X-Partner-API-Key': '${Constants().client_key}',
     });
 
     try {

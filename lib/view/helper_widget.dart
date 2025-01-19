@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:munch/service/common_post_api_handler.dart';
 import 'package:provider/provider.dart';
-
 import '../helpers/helper_widget.dart';
 import '../model/request_models/item_details_request_body_mode.l.dart';
 import '../model/response_models/item_details_model.dart';

@@ -5,7 +5,6 @@ import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_details_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
-import 'search_food_view_model.dart';
 
 class FoodItemsVM extends ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -21,14 +20,6 @@ class FoodItemsVM extends ChangeNotifier {
   
   setItemsListModel(ItemsListModel? val) {
     _itemsListModel = val;
-    notifyListeners();
-  }
-
-  ViewType _viewType = ViewType.grid;
-  ViewType get viewType => _viewType;
-
-  void toggleViewType() {
-    _viewType = _viewType == ViewType.grid ? ViewType.list : ViewType.grid;
     notifyListeners();
   }
 

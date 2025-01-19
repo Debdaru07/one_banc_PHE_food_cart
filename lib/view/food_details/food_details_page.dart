@@ -25,7 +25,17 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(widget.itemDetails.itemImageUrl ?? ''),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: SizedBox(
+              height: 300.0,
+              width: MediaQuery.of(context).size.width, 
+              child: Image.network(
+                widget.itemDetails.itemImageUrl ?? '',
+                fit: BoxFit.cover, 
+              ),
+            ),
+          ),
           SizedBox(height: 16.0),
           Text(
             'Cuisine: ${widget.itemDetails.cuisineName}',
@@ -45,7 +55,8 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
           SizedBox(height: 8.0),
           RatingBar.builder(
             initialRating: widget.itemDetails.itemRating ?? 0,
-            minRating: 1,
+            minRating: 0,
+            allowHalfRating: true,
             direction: Axis.horizontal,
             itemCount: 5,
             itemSize: 20,
@@ -65,7 +76,6 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
                   setState(() {
                     isAddedToCart = !isAddedToCart;
                   });
-                  // Handle add to cart logic here
                 },
                 child: Text(isAddedToCart ? 'Added' : 'Add to Cart'),
               ),

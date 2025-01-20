@@ -9,6 +9,7 @@ import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
 import '../view_model/item_fetch_vm.dart';
 import 'helper_widget.dart';
+import 'order_summary.dart';
 
 class FoodDeliveryListing extends StatefulWidget {
   const FoodDeliveryListing({super.key});
@@ -47,10 +48,12 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.shopping_cart, color: Colors.black),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (  context) => OrderSummaryPage()));
+                      },
                     ),
                     // Badge overlay
-                    showCartItems(0),
+                    showCartItems(viewModel.cartItems.length),
                   ],
                 ),
               ],
@@ -124,7 +127,7 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
       child: Container(
         padding: EdgeInsets.all(4),
         decoration: BoxDecoration(color: Colors.red,shape: BoxShape.circle,),
-        child: Text('0',style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold,),
+        child: Text('${items}',style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold,),
         ),
       ),
     );

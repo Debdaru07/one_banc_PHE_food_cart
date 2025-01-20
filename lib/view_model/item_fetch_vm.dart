@@ -11,7 +11,8 @@ import '../model/response_models/make_payment_model.dart';
 import '../service/common_post_api_handler.dart';
 
 class FoodItemsVM extends ChangeNotifier {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService;
+  FoodItemsVM({ApiService? apiService}) : _apiService = apiService ?? ApiService();
 
   RequestState _state = RequestState.completed;
   String _errorMessage = '';

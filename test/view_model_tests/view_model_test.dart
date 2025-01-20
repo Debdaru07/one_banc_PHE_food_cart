@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:munch/model/request_models/item_list_request_body_model.dart';
 import 'package:munch/model/request_models/make_payment_request_model.dart';
@@ -17,7 +16,7 @@ void main() {
 
   setUp(() {
     mockApiService = MockApiService();
-    viewModel = FoodItemsVM();
+    viewModel = FoodItemsVM(apiService: mockApiService);
   });
 
   group('FoodItemsVM Tests', () {
@@ -31,15 +30,6 @@ void main() {
       // Mock data
       final mockRequest = ItemListRequestModel();
       final mockResponse = ItemsListModel(responseCode: 200);
-
-      // when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
-      //   url: '',
-      //   headers: {},
-      //   requestBody: ItemListRequestModel(),
-      //   toJson: (val) => val.toJson() ,
-      //   fromJson: (val) => ItemsListModel.fromJson(val),
-      // )).thenAnswer((_) async => mockResponse);
-
       when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
         url: anyNamed('url'),
         headers: anyNamed('headers'),
@@ -58,19 +48,20 @@ void main() {
 
     test('fetchItemList handles errors', () async {
       final mockRequest = ItemListRequestModel();
+      final mockErrorMessage = 'Network error occurred';
 
       when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
-        url: '',
-        headers: {},
-        requestBody: ItemListRequestModel(),
-        toJson: (val) => {},
-        fromJson: (val) => ItemsListModel(),
-      )).thenThrow(Exception('Network Error'));
+        url: anyNamed('url'),
+        headers: anyNamed('headers'),
+        requestBody: anyNamed('requestBody'),
+        toJson: anyNamed('toJson'),
+        fromJson: anyNamed('fromJson'),
+      )).thenThrow(Exception(mockErrorMessage));
 
       await viewModel.fetchItemList(mockRequest);
 
       expect(viewModel.state, RequestState.error);
-      expect(viewModel.errorMessage, contains('Network Error'));
+      expect(viewModel.errorMessage, contains('Network error occurred'));
     });
 
     test('Cart operations work as expected', () {

@@ -1,7 +1,7 @@
 class ItemsFilterRequestModel {
   List<String>? cuisineType;
   PriceRange? priceRange;
-  int? minRating;
+  double? minRating;
 
   ItemsFilterRequestModel({this.cuisineType, this.priceRange, this.minRating});
 

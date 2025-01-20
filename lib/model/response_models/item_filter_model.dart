@@ -2,7 +2,7 @@ class ItemsFilterModel {
   int? responseCode;
   int? outcomeCode;
   String? responseMessage;
-  List<Cuisines>? cuisines;
+  List<CuisinesFilter>? cuisines;
   String? timestamp;
   String? requesterIp;
   String? timetaken;
@@ -23,7 +23,7 @@ class ItemsFilterModel {
     if (json['cuisines'] != null) {
       cuisines = [];
       json['cuisines'].forEach((v) {
-        cuisines?.add(new Cuisines.fromJson(v));
+        cuisines?.add(new CuisinesFilter.fromJson(v));
       });
     }
     timestamp = json['timestamp'];
@@ -46,22 +46,22 @@ class ItemsFilterModel {
   }
 }
 
-class Cuisines {
+class CuisinesFilter {
   int? cuisineId;
   String? cuisineName;
   String? cuisineImageUrl;
-  List<Items>? items;
+  List<ItemsFilter>? items;
 
-  Cuisines({this.cuisineId, this.cuisineName, this.cuisineImageUrl, this.items});
+  CuisinesFilter({this.cuisineId, this.cuisineName, this.cuisineImageUrl, this.items});
 
-  Cuisines.fromJson(Map<String, dynamic> json) {
+  CuisinesFilter.fromJson(Map<String, dynamic> json) {
     cuisineId = json['cuisine_id'];
     cuisineName = json['cuisine_name'];
     cuisineImageUrl = json['cuisine_image_url'];
     if (json['items'] != null) {
       items = [];
       json['items'].forEach((v) {
-        items?.add(new Items.fromJson(v));
+        items?.add(new ItemsFilter.fromJson(v));
       });
     }
   }
@@ -78,14 +78,14 @@ class Cuisines {
   }
 }
 
-class Items {
+class ItemsFilter {
   int? id;
   String? name;
   String? imageUrl;
 
-  Items({this.id, this.name, this.imageUrl});
+  ItemsFilter({this.id, this.name, this.imageUrl});
 
-  Items.fromJson(Map<String, dynamic> json) {
+  ItemsFilter.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     imageUrl = json['image_url'];

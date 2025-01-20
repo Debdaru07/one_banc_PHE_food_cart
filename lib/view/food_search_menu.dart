@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../helpers/helper_widget.dart';
+import '../helpers/snackbar_bottom.dart';
 import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
@@ -82,14 +83,17 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                         onPressed: () async {
                           log('Filter button pressed');
                           // FilterPage
-                          var result = await showModalBottomSheet(
+                          var result = await showModalBottomSheet<dynamic>(
                             context: context,
                             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
                             builder: (context) => FractionallySizedBox(
                               heightFactor: 1,
-                              child: FilterPage(onApplyFilter: (p0) {},)
+                              child: FilterPage()
                             ),
                           );
+                          if (result == true) {
+                            showCustomSnackbar(context, text: "Filtered!");
+                          }
                         },
                         style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
                         child: Icon(Icons.filter_list,color: Colors.black),

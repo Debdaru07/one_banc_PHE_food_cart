@@ -113,6 +113,14 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  ItemsFilterRequestModel _selectedFilterItems = ItemsFilterRequestModel();
+  ItemsFilterRequestModel get selectedFilterItems => _selectedFilterItems;
+
+  setFilterItems(ItemsFilterRequestModel val){
+    _selectedFilterItems = val;
+    notifyListeners();
+  }
+
   // Function 3: Fetch item by filter
   Future<void> getItemByFilter(ItemsFilterRequestModel request) async {
     var url = AppUrl().filterEndPointURL; 
@@ -128,11 +136,44 @@ class FoodItemsVM extends ChangeNotifier {
         fromJson: (json) => ItemsFilterModel.fromJson(json),
       );
       setItemsFilterModel(response);
+      setItemsListModel(convertItemsFilterToItemsList(response));
       _updateState(RequestState.completed);
     } catch (e) {
       _updateState(RequestState.error, errorMessage: e.toString());
     }
   }
+
+  ItemsListModel convertItemsFilterToItemsList(ItemsFilterModel filterModel) {
+    return ItemsListModel(
+      responseCode: filterModel.responseCode,
+      outcomeCode: filterModel.outcomeCode,
+      responseMessage: filterModel.responseMessage,
+      page: 1, 
+      count: 10,
+      totalPages: 1,
+      totalItems: filterModel.cuisines?.fold(0, (sum, cuisine) => sum! + (cuisine.items?.length ?? 0)) ?? 0,
+      cuisines: filterModel.cuisines?.map((cuisine) {
+        return Cuisines(
+          cuisineId: cuisine.cuisineId?.toString(), // Adjust type if necessary
+          cuisineName: cuisine.cuisineName,
+          cuisineImageUrl: cuisine.cuisineImageUrl,
+          items: cuisine.items?.map((item) {
+            return Items(
+              id: item.id?.toString(), // Adjust type if necessary
+              name: item.name,
+              imageUrl: item.imageUrl,
+              price: '', // Assuming you want to keep price, adjust if needed
+              rating: '', // Assuming you want to keep rating, adjust if needed
+            );
+          }).toList(),
+        );
+      }).toList(),
+      timestamp: filterModel.timestamp,
+      requesterIp: filterModel.requesterIp,
+      timetaken: filterModel.timetaken,
+    );
+  }
+
 
 
   MakePaymentResponseModel? _makePaymentResponseModel;

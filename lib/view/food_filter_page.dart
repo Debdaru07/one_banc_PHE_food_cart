@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:provider/provider.dart';
-
+import '../model/request_models/item_filter_request_model.dart';
+import '../model/request_models/item_list_request_body_model.dart';
 import '../view_model/item_fetch_vm.dart';
 
 // Reusable Text Field Widget Function with Border
@@ -148,9 +149,7 @@ Widget ratingInput({
 
 // Main Filter Page Stateful Widget
 class FilterPage extends StatefulWidget {
-  final Function(Map<String, dynamic>) onApplyFilter;
-
-  const FilterPage({Key? key, required this.onApplyFilter}) : super(key: key);
+  const FilterPage({Key? key,}) : super(key: key);
 
   @override
   _FilterPageState createState() => _FilterPageState();
@@ -162,25 +161,15 @@ class _FilterPageState extends State<FilterPage> {
   double _maxPrice = 1000;
   double _rating = 0;
 
-  // Function to handle Apply filter
-  void _applyFilter() {
-    Map<String, dynamic> filterData = {
-      'cuisine_name': _cuisineController.text,
-      'price_range': {'min': _minPrice, 'max': _maxPrice},
-      'rating': _rating,
-    };
-    
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Filter"),
-        backgroundColor: const Color.fromARGB(255, 241, 223, 168),
-      ),
-      body: Consumer<FoodItemsVM>(
-        builder: (context, viewModel, child) => Padding(
+    return Consumer<FoodItemsVM>(
+        builder: (context, viewModel, child) => Scaffold(
+        appBar: AppBar(
+          title: Text("Filter"),
+          backgroundColor: const Color.fromARGB(255, 241, 223, 168),
+        ),
+        body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
@@ -217,41 +206,51 @@ class _FilterPageState extends State<FilterPage> {
                     });
                   },
                 ),
-                SizedBox(height: 16),
-                // Apply Filter Button
-                
               ],
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _cuisineController.clear();
-                _minPrice = 0;
-                _maxPrice = 1000;
-                _rating = 0;
-              });
-            },
-            child: Text("Reset", style: TextStyle(color: Colors.white,fontSize: 20,),),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[500],
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    _cuisineController.clear();
+                    _minPrice = 0;
+                    _maxPrice = 1000;
+                    _rating = 0;
+                  });
+                  Future.delayed(Duration.zero, () async {
+                    await viewModel.getItemByFilter(ItemsFilterRequestModel());
+                    await viewModel.fetchItemList(ItemListRequestModel(page: 1, count: 10));
+                  });
+                },
+                child: Text("Reset", style: TextStyle(color: Colors.white,fontSize: 20,),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[500],
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Future.delayed(Duration.zero, () async { 
+                    await viewModel.setFilterItems(ItemsFilterRequestModel(cuisineType: [_cuisineController.text],minRating: _rating,priceRange: PriceRange(maxAmount: int.tryParse('${_minPrice}'), minAmount: int.tryParse('$_maxPrice'))));
+                    await viewModel.getItemByFilter(viewModel.selectedFilterItems);
+                    Navigator.pop(context, true);
+                  });
+                },
+                child: Text("Apply", style: TextStyle(color: Colors.white,fontSize: 20,),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: _applyFilter,
-            child: Text("Apply", style: TextStyle(color: Colors.white,fontSize: 20,),),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            ),
-          ),
-        ],
+        )
       )
     );
   }

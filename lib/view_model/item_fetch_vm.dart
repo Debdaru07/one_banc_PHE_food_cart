@@ -113,10 +113,10 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  ItemsFilterRequestModel _selectedFilterItems = ItemsFilterRequestModel();
-  ItemsFilterRequestModel get selectedFilterItems => _selectedFilterItems;
+  ItemsFilterRequestModel? _selectedFilterItems = ItemsFilterRequestModel();
+  ItemsFilterRequestModel? get selectedFilterItems => _selectedFilterItems;
 
-  setFilterItems(ItemsFilterRequestModel val){
+  setFilterItems(ItemsFilterRequestModel? val){
     _selectedFilterItems = val;
     notifyListeners();
   }

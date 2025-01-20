@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -39,6 +41,7 @@ Widget textFieldInput({
 }
 
 Widget dropdownSearchInput({
+  required TextEditingController controller,
   required String label,
   required String hintText,
   required List<String> options,
@@ -58,8 +61,9 @@ Widget dropdownSearchInput({
         ),
         child: DropdownSearch<String>(
           // key: dropDownKey,
-          selectedItem: "Cuisine Type",
+          selectedItem: controller.text.isEmpty ? "Cuisine Type" : controller.text,
           items: (filter, infiniteScrollProps) => options,
+          onChanged: onChanged,
           decoratorProps: DropDownDecoratorProps(
             decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -162,6 +166,25 @@ class _FilterPageState extends State<FilterPage> {
   double _rating = 0;
 
   @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<FoodItemsVM>(context, listen: false);
+    try {
+      Future.delayed(Duration.zero, () {
+        if(viewModel.selectedFilterItems != ItemsFilterRequestModel()) {
+          _cuisineController.text = viewModel.selectedFilterItems?.cuisineType?[0] ?? '';
+          _minPrice = viewModel.selectedFilterItems?.priceRange?.minAmount?.toDouble() ?? 0.0;
+          _maxPrice = viewModel.selectedFilterItems?.priceRange?.maxAmount?.toDouble() ?? 0.0;
+          _rating = viewModel.selectedFilterItems?.minRating ?? 0.0;
+          setState(() {});
+        }
+      });
+    } catch(e) {
+      log('e : $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<FoodItemsVM>(
         builder: (context, viewModel, child) => Scaffold(
@@ -177,6 +200,7 @@ class _FilterPageState extends State<FilterPage> {
               children: [
                 // Use widget functions for each field
                 dropdownSearchInput(
+                  controller: _cuisineController,
                   label: 'Cuisine Type',
                   hintText: 'Select Cuisine',
                   options: viewModel.cuisineTypes,
@@ -225,6 +249,7 @@ class _FilterPageState extends State<FilterPage> {
                   });
                   Future.delayed(Duration.zero, () async {
                     await viewModel.getItemByFilter(ItemsFilterRequestModel());
+                    await viewModel.setFilterItems(null);
                     await viewModel.fetchItemList(ItemListRequestModel(page: 1, count: 10));
                   });
                 },
@@ -238,7 +263,7 @@ class _FilterPageState extends State<FilterPage> {
                 onPressed: () async {
                   Future.delayed(Duration.zero, () async { 
                     await viewModel.setFilterItems(ItemsFilterRequestModel(cuisineType: [_cuisineController.text],minRating: _rating,priceRange: PriceRange(maxAmount: int.tryParse('${_minPrice}'), minAmount: int.tryParse('$_maxPrice'))));
-                    await viewModel.getItemByFilter(viewModel.selectedFilterItems);
+                    await viewModel.getItemByFilter(viewModel.selectedFilterItems as ItemsFilterRequestModel);
                     Navigator.pop(context, true);
                   });
                 },

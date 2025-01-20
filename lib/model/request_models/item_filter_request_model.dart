@@ -22,6 +22,14 @@ class ItemsFilterRequestModel {
     data['min_rating'] = this.minRating;
     return data;
   }
+
+  bool get isFilterSelected {
+    bool isCuisineTypeEmpty = this.cuisineType == null || this.cuisineType!.isEmpty;
+    bool isPriceRangeEmpty = this.priceRange == null ||  (this.priceRange!.minAmount == null || this.priceRange!.minAmount == 0) && (this.priceRange!.maxAmount == null || this.priceRange!.maxAmount == 0);
+    bool isMinRatingEmpty = this.minRating == null || this.minRating == 0.0;
+
+    return isCuisineTypeEmpty && isPriceRangeEmpty && isMinRatingEmpty;
+  }
 }
 
 class PriceRange {

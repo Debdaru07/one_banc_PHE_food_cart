@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../helpers/helper_widget.dart';
 import '../helpers/snackbar_bottom.dart';
+import '../model/request_models/item_filter_request_model.dart';
 import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
@@ -23,6 +24,7 @@ class FoodDeliveryListing extends StatefulWidget {
 }
 
 class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
+  bool? result;
 
   @override
   initState() {
@@ -72,7 +74,7 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
             ),
             body: Column(
               children: [
-                // Search Bar with Filter and Sort Buttons
+                // Search Bar with Filter Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                   child: Row(
@@ -81,22 +83,26 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                       SizedBox(width: 8),
                       OutlinedButton(
                         onPressed: () async {
-                          log('Filter button pressed');
-                          // FilterPage
-                          var result = await showModalBottomSheet<dynamic>(
-                            context: context,
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-                            builder: (context) => FractionallySizedBox(
-                              heightFactor: 1,
-                              child: FilterPage()
-                            ),
-                          );
-                          if (result == true) {
-                            showCustomSnackbar(context, text: "Filtered!");
+                          try {
+                            result = await showModalBottomSheet<dynamic>(
+                              context: context,
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                              builder: (context) => FractionallySizedBox(
+                                heightFactor: 1,
+                                child: FilterPage()
+                              ),
+                            );
+                            if (result == true) {
+                              showCustomSnackbar(context, text: "Items filtered");
+                            }
+                          } catch(obj) {
+                            log('not done anything');
                           }
+                          setState(() {});
+                          log('viewModel.selectedFilterItems?.isFilterSelected :- ${viewModel.selectedFilterItems?.isFilterSelected}');
                         },
-                        style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
-                        child: Icon(Icons.filter_list,color: Colors.black),
+                        style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)), iconColor: viewModel.selectedFilterItems != ItemsFilterRequestModel() ?  Colors.blue : Colors.grey[600]),
+                        child: Icon((viewModel.selectedFilterItems?.isFilterSelected == true || result == true) ?  Icons.filter_alt : Icons.filter_alt_outlined, color: Colors.black),
                       ),
                     ],
                   ),

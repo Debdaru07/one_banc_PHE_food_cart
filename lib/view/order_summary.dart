@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/snackbar_bottom.dart';
+import '../model/grouped_model.dart';
 import '../model/request_models/make_payment_request_model.dart';
 import '../view_model/item_fetch_vm.dart';
 import 'food_search_menu.dart';
@@ -40,6 +41,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     );
     if (viewModel.makePaymentResponseModel?.responseCode == 200) {
       showCustomSnackbar(context, text: "Order placed successfully!");
+      await viewModel.removeAllCartItems();
       await Future.delayed(const Duration(milliseconds: 800));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FoodDeliveryListing()));
     } else {
@@ -58,17 +60,20 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           appBar: AppBar(
             title: const Text('Order Summary'),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: IconButton(
-                  onPressed: () async => await viewModel.removeAllCartItems(), 
-                    icon: Row(
-                      children: [
-                        Icon(Icons.shopping_cart, color: Colors.red,size: 20,),
-                        const SizedBox(width: 4,),
-                        Text('Clear Cart', style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.w500)),
-                      ],
-                    )
+              Visibility(
+                visible: (itemDetails.data ?? []).isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: IconButton(
+                    onPressed: () async => await viewModel.removeAllCartItems(), 
+                      icon: Row(
+                        children: [
+                          Icon(Icons.shopping_cart, color: Colors.red,size: 20,),
+                          const SizedBox(width: 4,),
+                          Text('Clear Cart', style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.w500)),
+                        ],
+                      )
+                  ),
                 ),
               )
             ],
@@ -81,7 +86,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                 Text( 'Item Summary', style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 8),
                 (itemDetails.data ?? []).isEmpty
-                ? const Text('No items in the order.')
+                ? const Text('      ----------- No items in the order -------')
                 : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
@@ -89,8 +94,9 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         DataColumn(label: Text('Item Id', style: TextStyle(fontWeight: FontWeight.bold))),
                         DataColumn(label: Text('Cuisine Id', style: TextStyle(fontWeight: FontWeight.bold))),
                         DataColumn(label: Text('Price', style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(label: Text('Quantity', style: TextStyle(fontWeight: FontWeight.bold))),
                       ],
-                      rows: (itemDetails.data ?? []).map((item) {
+                      rows: _groupItemsByQuantity(itemDetails.data ?? []).map((item) {
                         return DataRow(cells: [
                           DataCell(
                             Container(
@@ -111,6 +117,13 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text('₹ ${item.itemPrice}'),
+                            ),
+                          ),
+                          DataCell(
+                            Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text('${item.quantity}'),
                             ),
                           ),
                         ]);
@@ -146,6 +159,25 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
         );
       }
     );
+  }
+
+  List<ItemGroup> _groupItemsByQuantity(List<Data> items) {
+    Map<String, ItemGroup> groupedItems = {};
+    for (var item in items) {
+      String key = '${item.itemId}-${item.cuisineId}';
+      if (groupedItems.containsKey(key)) {
+        groupedItems[key]?.quantity += 1;
+      } else {
+        groupedItems[key] = ItemGroup(
+          itemId: item.itemId,
+          cuisineId: item.cuisineId!,
+          itemPrice: item.itemPrice,
+          quantity: 1,
+        );
+      }
+    }
+
+    return groupedItems.values.toList();
   }
 
   Widget commonLabelValueRow(String label, String value) => Row(

@@ -176,4 +176,14 @@ class FoodItemsVM extends ChangeNotifier {
     cartItems.removeLast();
     notifyListeners();
   }
+
+  bool checkIfFoodExistsInCart(ItemDetailsResponseModel? element){
+    bool check = false;
+    cartItems.forEach((obj) {
+      if('${obj.cuisineId}' == '${element?.cuisineId}' && '${obj.itemId}' == '${element?.itemId}') {
+        check = true;
+      }
+    });
+    return check;
+  }
 }

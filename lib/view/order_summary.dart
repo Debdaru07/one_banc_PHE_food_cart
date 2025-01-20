@@ -57,6 +57,21 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Order Summary'),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  onPressed: () async => await viewModel.removeAllCartItems(), 
+                    icon: Row(
+                      children: [
+                        Icon(Icons.shopping_cart, color: Colors.red,size: 20,),
+                        const SizedBox(width: 4,),
+                        Text('Clear Cart', style: TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.w500)),
+                      ],
+                    )
+                ),
+              )
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),

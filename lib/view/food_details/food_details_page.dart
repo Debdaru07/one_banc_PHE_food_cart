@@ -23,8 +23,10 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
     super.initState();
     final viewModel = Provider.of<FoodItemsVM>(context, listen: false);
     Future.delayed(Duration.zero, () async {
-      await viewModel.setCartValue(0);
-      await viewModel.removeAllCartItems();
+      if(viewModel.checkIfFoodExistsInCart(widget.itemDetails) == false) {
+        await viewModel.setCartValue(0);
+        // await viewModel.removeAllCartItems();
+      }
     });
   }
 

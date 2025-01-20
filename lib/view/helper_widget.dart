@@ -89,6 +89,9 @@ class _AccordionCardState extends State<AccordionCard> {
                                 )
                               ),
                             );
+                            if(result == null) {
+
+                            }
                           });
                         },
                         child: ListTile(
@@ -155,8 +158,7 @@ class _CommonBottomSheetState extends State<CommonBottomSheet> {
           body: Visibility(
             visible: viewModel.state == RequestState.completed,
             replacement: const FoodLoader(),
-            child: 
-              ItemDetailsWidget(itemDetails: viewModel.itemDetails ?? ItemDetailsResponseModel(),)
+            child: ItemDetailsWidget(itemDetails: viewModel.itemDetails ?? ItemDetailsResponseModel(),)
           ),
         ),
       ),

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../helpers/snackbar_bottom.dart';
+import '../../model/request_models/make_payment_request_model.dart';
 import '../../model/response_models/item_details_model.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import '../../view_model/item_fetch_vm.dart';
+import '../order_summary.dart';
 
 class ItemDetailsWidget extends StatefulWidget {
   final ItemDetailsResponseModel itemDetails;
@@ -68,17 +74,31 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
             onRatingUpdate: (rating) {
             },
           ),
+          Text( '₹ ${widget.itemDetails.itemPrice}', style: TextStyle( fontSize: 35.0, fontWeight: FontWeight.bold)),
+          SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text( '₹ ${widget.itemDetails.itemPrice}', style: TextStyle( fontSize: 35.0, fontWeight: FontWeight.bold)),
+              ElevatedButton(
+                onPressed: () async {
+                  final object = MakePaymentRequestModel(
+                    data: [
+                      Data(cuisineId: int.parse(widget.itemDetails.cuisineId ?? ''), itemId: widget.itemDetails.itemId, itemPrice: widget.itemDetails.itemPrice, itemQuantity: 1)
+                    ]
+                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSummaryPage(itemDetails: object,)));
+                },
+                style: ElevatedButton.styleFrom( backgroundColor: Colors.green),
+                child: Text('Place Order', style: TextStyle(color: Colors.white),),
+              ),
               ElevatedButton(
                 onPressed: () {
                   setState(() {
                     isAddedToCart = !isAddedToCart;
                   });
                 },
-                child: Text(isAddedToCart ? 'Added' : 'Add to Cart'),
+                style: ElevatedButton.styleFrom( backgroundColor: Colors.blue),
+                child: Text(isAddedToCart ? 'Added' : 'Add to Cart', style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
@@ -87,10 +107,4 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
     );
   }
 
-  Widget _buildIngredientChip(String ingredient) {
-    return Chip(
-      label: Text(ingredient),
-      backgroundColor: Colors.grey[200],
-    );
-  }
 }

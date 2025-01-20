@@ -98,7 +98,7 @@ class FoodItemsVM extends ChangeNotifier {
       final response = await _apiService.postRequest<ItemsFilterRequestModel, ItemsFilterModel>(
         url: url,
         headers: {
-          'X-Forward-Proxy-Action': 'get_item_by_id'
+          'X-Forward-Proxy-Action': 'get_item_by_filter'
         },
         requestBody: request,
         toJson: (req) => req.toJson(),
@@ -112,11 +112,11 @@ class FoodItemsVM extends ChangeNotifier {
   }
 
 
-  MakePaymentResponseModel? _makePaymentRequestModel;
-  MakePaymentResponseModel? get makePaymentRequestModel => _makePaymentRequestModel;
+  MakePaymentResponseModel? _makePaymentResponseModel;
+  MakePaymentResponseModel? get makePaymentResponseModel => _makePaymentResponseModel;
   
-  setmakePaymentRequestModel(MakePaymentResponseModel val) {
-    _makePaymentRequestModel = val;
+  setmakePaymentResponseModel(MakePaymentResponseModel val) {
+    _makePaymentResponseModel = val;
     notifyListeners();
   }
 
@@ -134,7 +134,7 @@ class FoodItemsVM extends ChangeNotifier {
         toJson: (req) => req.toJson(),
         fromJson: (json) => MakePaymentResponseModel.fromJson(json), 
       );
-      setmakePaymentRequestModel(response);
+      setmakePaymentResponseModel(response);
       _updateState(RequestState.completed);
     } catch (e) {
       _updateState(RequestState.error, errorMessage: e.toString());

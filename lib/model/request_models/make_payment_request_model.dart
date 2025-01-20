@@ -25,6 +25,27 @@ class MakePaymentRequestModel {
     }
     return data;
   }
+
+  // Calculate and set the total amount, including 2.5% GST and 2.5% CGST
+  void calculateTotalAmount() {
+    if (data != null) {
+      double sum = data!.fold(0, (previousValue, item) {
+        return previousValue + (item.itemPrice ?? 0) * (item.itemQuantity ?? 1);
+      });
+      double gst = sum * 0.025;
+      double cgst = sum * 0.025;
+      totalAmount = (sum + gst + cgst).toStringAsFixed(2); 
+    }
+  }
+
+  // Calculate and set the total items based on the sum of item quantities
+  void calculateTotalItems() {
+    if (data != null) {
+      totalItems = data!.fold(0, (previousValue, item) {
+        return previousValue! + (item.itemQuantity ?? 0);
+      });
+    }
+  }
 }
 
 class Data {

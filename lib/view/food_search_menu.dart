@@ -10,6 +10,7 @@ import '../service/common_post_api_handler.dart';
 import '../view_model/item_fetch_vm.dart';
 import 'helper_widget.dart';
 import 'order_summary.dart';
+import 'search.dart';
 
 class FoodDeliveryListing extends StatefulWidget {
   const FoodDeliveryListing({super.key});
@@ -42,7 +43,18 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                 icon: Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {},
               ),
-              title: Text('Food Court',style: TextStyle(color: Colors.black)),
+              title: Row(
+                children: [
+                  ClipOval(
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Image.asset('assets/images/onebanc_logo.jpeg', width: 40, height: 40,fit: BoxFit.cover,),
+                    )
+                  ), 
+                  const SizedBox(width: 5,),
+                  Text('Food Court',style: TextStyle(color: Colors.black)),
+                ],
+              ),
               actions: [
                 Stack(
                   children: [
@@ -65,17 +77,18 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Search',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: TextField(
+                      //     decoration: InputDecoration(
+                      //       hintText: 'Search',
+                      //       prefixIcon: Icon(Icons.search),
+                      //       border: OutlineInputBorder(
+                      //         borderRadius: BorderRadius.circular(8.0),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      SearchScreen(),
                       SizedBox(width: 8),
                       OutlinedButton(
                         onPressed: () {

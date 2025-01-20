@@ -33,6 +33,7 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Function 1: Fetch all items
   Future<void> fetchItemList(ItemListRequestModel requestModel) async {
     var url = AppUrl().itemsEndPointURL;
     _updateState(RequestState.loading);

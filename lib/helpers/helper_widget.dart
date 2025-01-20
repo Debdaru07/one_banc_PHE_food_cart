@@ -38,7 +38,7 @@ class _FoodLoaderState extends State<FoodLoader> with SingleTickerProviderStateM
         turns: _controller.drive(Tween(begin: 0.0, end: 3.0)), 
         child: ClipOval(child: Padding(
           padding: const EdgeInsets.all(1.0),
-          child: Image.asset('assets/images/loading_screen.jpg', width: 70, height: 70,fit: BoxFit.cover,),
+          child: Image.asset('assets/images/onebanc_logo.jpeg', width: 70, height: 70,fit: BoxFit.cover,),
         )),
       ),
     );

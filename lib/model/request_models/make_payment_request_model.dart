@@ -1,5 +1,5 @@
 class MakePaymentRequestModel {
-  String? totalAmount;
+  double? totalAmount;
   int? totalItems;
   String? gst;
   String? cgst;
@@ -40,7 +40,7 @@ class MakePaymentRequestModel {
       sumAmount = '${sum.toStringAsFixed(2)}';
       gst = '${localGst.toStringAsFixed(2)}';
       cgst = '${localCgst.toStringAsFixed(2)}';
-      totalAmount = (sum + localGst + localCgst).toStringAsFixed(2); 
+      totalAmount = double.parse('${(sum + localGst + localCgst).toStringAsFixed(2)}'); 
     }
   }
 

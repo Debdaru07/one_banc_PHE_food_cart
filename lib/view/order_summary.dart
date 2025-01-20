@@ -34,7 +34,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     final viewModel = Provider.of<FoodItemsVM>(context, listen: false);
     await viewModel.makePayment(
       MakePaymentRequestModel(
-        totalAmount: itemDetails?.totalAmount?.toString(),
+        totalAmount: itemDetails?.totalAmount,
         totalItems: itemDetails?.totalItems,
         data: itemDetails?.data,
       ),

@@ -140,4 +140,40 @@ class FoodItemsVM extends ChangeNotifier {
       _updateState(RequestState.error, errorMessage: e.toString());
     }
   }
+
+  int _addToCart = 0;
+  int get addToCartValue => _addToCart;
+
+  setCartValue(int val) {
+    _addToCart = val;
+    notifyListeners();
+  }
+
+  incrementCartValue() {
+    _addToCart += 1;
+    notifyListeners();
+  }
+
+  decrementCartValue() {
+    _addToCart -= 1;
+    notifyListeners();
+  }
+
+  List<Data> _cartItems = []; 
+  List<Data> get cartItems => _cartItems;
+
+  setCartItems(Data val) {
+    cartItems.add(val);
+    notifyListeners();
+  }
+
+  removeAllCartItems() {
+    _cartItems = [];
+    notifyListeners();
+  }
+
+  popLastCartItem() {
+    cartItems.removeLast();
+    notifyListeners();
+  }
 }

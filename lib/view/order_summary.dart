@@ -7,9 +7,9 @@ import '../view_model/item_fetch_vm.dart';
 import 'food_search_menu.dart';
 
 class OrderSummaryPage extends StatefulWidget {
-  final MakePaymentRequestModel itemDetails;
+  final MakePaymentRequestModel? itemDetails;
 
-  const OrderSummaryPage({Key? key, required this.itemDetails}) : super(key: key);
+  const OrderSummaryPage({Key? key, this.itemDetails}) : super(key: key);
 
   @override
   State<OrderSummaryPage> createState() => _OrderSummaryPageState();
@@ -22,16 +22,16 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   @override
   void initState() {
     super.initState();
-    widget.itemDetails.calculateTotalAmount();
-    widget.itemDetails.calculateTotalItems();
+    widget.itemDetails?.calculateTotalAmount();
+    widget.itemDetails?.calculateTotalItems();
   }
   Future<void> _makePayment(BuildContext context) async {
     final viewModel = Provider.of<FoodItemsVM>(context, listen: false);
     await viewModel.makePayment(
       MakePaymentRequestModel(
-        totalAmount: widget.itemDetails.totalAmount?.toString(),
-        totalItems: widget.itemDetails.totalItems,
-        data: widget.itemDetails.data,
+        totalAmount: widget.itemDetails?.totalAmount?.toString(),
+        totalItems: widget.itemDetails?.totalItems,
+        data: widget.itemDetails?.data,
       ),
     );
     if (viewModel.makePaymentResponseModel?.responseCode == 200) {
@@ -56,7 +56,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           children: [
             Text( 'Item Summary', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 8),
-            (widget.itemDetails.data ?? []).isEmpty
+            (widget.itemDetails?.data ?? []).isEmpty
             ? const Text('No items in the order.')
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -66,7 +66,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                     DataColumn(label: Text('Cuisine Id', style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(label: Text('Price', style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  rows: (widget.itemDetails.data ?? []).map((item) {
+                  rows: (widget.itemDetails?.data ?? []).map((item) {
                     return DataRow(cells: [
                       DataCell(
                         Container(
@@ -93,19 +93,19 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   }).toList(),
                 ),
               ),
-            if((widget.itemDetails.data ?? []).isNotEmpty) Divider(color: Colors.grey[700], height: 1,),
+            if((widget.itemDetails?.data ?? []).isNotEmpty) Divider(color: Colors.grey[700], height: 1,),
             const SizedBox(height: 12),
-            commonLabelValueRow('Total Quantity', '${widget.itemDetails.totalItems}'),
+            commonLabelValueRow('Total Quantity', '${widget.itemDetails?.totalItems}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('Sum Total', '₹ ${widget.itemDetails.sumAmount}'),
+            commonLabelValueRow('Sum Total', '₹ ${widget.itemDetails?.sumAmount}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('GST (2.5%)', '₹ ${widget.itemDetails.gst}'),
+            commonLabelValueRow('GST (2.5%)', '₹ ${widget.itemDetails?.gst}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('CGST (2.5%)', '₹ ${widget.itemDetails.cgst}'),
+            commonLabelValueRow('CGST (2.5%)', '₹ ${widget.itemDetails?.cgst}'),
             const SizedBox(height: 12),
             Divider(color: Colors.grey[700], height: 1,),
             const SizedBox(height: 12),
-            commonLabelValueRow('Total Amount Payable', '₹ ${widget.itemDetails.totalAmount}'),
+            commonLabelValueRow('Total Amount Payable', '₹ ${widget.itemDetails?.totalAmount}'),
             const Spacer(),
             ElevatedButton(
               onPressed: () => _makePayment(context),

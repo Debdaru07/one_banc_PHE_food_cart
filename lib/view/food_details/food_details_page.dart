@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../helpers/snackbar_bottom.dart';
 import '../../model/request_models/make_payment_request_model.dart';
 import '../../model/response_models/item_details_model.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -18,7 +17,16 @@ class ItemDetailsWidget extends StatefulWidget {
 }
 
 class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
-  bool isAddedToCart = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<FoodItemsVM>(context, listen: false);
+    Future.delayed(Duration.zero, () async {
+      await viewModel.setCartValue(0);
+      await viewModel.removeAllCartItems();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,32 +84,61 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
           ),
           Text( '₹ ${widget.itemDetails.itemPrice}', style: TextStyle( fontSize: 35.0, fontWeight: FontWeight.bold)),
           SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final object = MakePaymentRequestModel(
-                    data: [
-                      Data(cuisineId: int.parse(widget.itemDetails.cuisineId ?? ''), itemId: widget.itemDetails.itemId, itemPrice: widget.itemDetails.itemPrice, itemQuantity: 1)
-                    ]
-                  );
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSummaryPage(itemDetails: object,)));
-                },
-                style: ElevatedButton.styleFrom( backgroundColor: Colors.green),
-                child: Text('Place Order', style: TextStyle(color: Colors.white),),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isAddedToCart = !isAddedToCart;
-                  });
-                },
-                style: ElevatedButton.styleFrom( backgroundColor: Colors.blue),
-                child: Text(isAddedToCart ? 'Added' : 'Add to Cart', style: TextStyle(color: Colors.white),),
-              ),
-            ],
-          ),
+          Consumer<FoodItemsVM>(
+            builder: (context, viewModel, _) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if(viewModel.cartItems.isNotEmpty)
+                ElevatedButton(
+                  onPressed: () async {
+                    final object = MakePaymentRequestModel(
+                      data: viewModel.cartItems
+                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSummaryPage(itemDetails: object,)));
+                  },
+                  style: ElevatedButton.styleFrom( backgroundColor: Colors.green),
+                  child: Text('Place Order', style: TextStyle(color: Colors.white),),
+                ),
+                Visibility(
+                  visible: viewModel.addToCartValue > 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Decrement Button
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () async {
+                          await viewModel.decrementCartValue();
+                          await viewModel.popLastCartItem();
+                        }
+                      ),
+                      // Quantity Display
+                      Text(
+                        '${viewModel.addToCartValue}',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      // Increment Button
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () async {
+                          await viewModel.setCartItems(Data(cuisineId: int.parse(widget.itemDetails.cuisineId ?? ''), itemId: widget.itemDetails.itemId, itemPrice: widget.itemDetails.itemPrice, itemQuantity: 1));
+                          await viewModel.incrementCartValue();
+                        },
+                      ),
+                    ],
+                  ),
+                  replacement: ElevatedButton(
+                    onPressed: () async {
+                      await viewModel.setCartItems(Data(cuisineId: int.parse(widget.itemDetails.cuisineId ?? ''), itemId: widget.itemDetails.itemId, itemPrice: widget.itemDetails.itemPrice, itemQuantity: 1));
+                      await viewModel.incrementCartValue();
+                    },
+                    style: ElevatedButton.styleFrom( backgroundColor: Colors.blue),
+                    child: Text('Add', style: TextStyle(color: Colors.white),),
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

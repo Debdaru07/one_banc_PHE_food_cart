@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showCustomSnackbar(BuildContext context, {required String text,} ) async {
+void showCustomSnackbar(BuildContext context, {required String text, Color? textColor} ) async {
     final snackbar = SnackBar(
       content: SizedBox(
         height: 60,
@@ -24,7 +24,7 @@ void showCustomSnackbar(BuildContext context, {required String text,} ) async {
                   ),
                 ),
               ),
-              Text( text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 22, 114, 25),), ),
+              Text( text, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textColor ?? Color.fromARGB(255, 22, 114, 25),), ),
             ],
           ),
         ),

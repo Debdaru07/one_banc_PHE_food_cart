@@ -36,7 +36,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     if (viewModel.makePaymentResponseModel?.responseCode == 200) {
       showCustomSnackbar(context, text: "Order placed successfully!");
     } else {
-      showCustomSnackbar(context, text: "Couldn't place order");
+      showCustomSnackbar(context, text: "Couldn't place order", textColor: Colors.red);
     }
   }
 
@@ -83,7 +83,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         Container(
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('\$${item.itemPrice}'),
+                          child: Text('₹ ${item.itemPrice}'),
                         ),
                       ),
                     ]);
@@ -94,15 +94,15 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
             const SizedBox(height: 12),
             commonLabelValueRow('Total Quantity', '${widget.itemDetails.totalItems}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('Sum Total', '${widget.itemDetails.sumAmount}'),
+            commonLabelValueRow('Sum Total', '₹ ${widget.itemDetails.sumAmount}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('GST (2.5%)', '${widget.itemDetails.gst}'),
+            commonLabelValueRow('GST (2.5%)', '₹ ${widget.itemDetails.gst}'),
             const SizedBox(height: 12),
-            commonLabelValueRow('CGST (2.5%)', '${widget.itemDetails.cgst}'),
+            commonLabelValueRow('CGST (2.5%)', '₹ ${widget.itemDetails.cgst}'),
             const SizedBox(height: 12),
             Divider(color: Colors.grey[700], height: 1,),
             const SizedBox(height: 12),
-            commonLabelValueRow('Total Amount Payable', '${widget.itemDetails.totalAmount}'),
+            commonLabelValueRow('Total Amount Payable', '₹ ${widget.itemDetails.totalAmount}'),
             const Spacer(),
             ElevatedButton(
               onPressed: () => _makePayment(context),

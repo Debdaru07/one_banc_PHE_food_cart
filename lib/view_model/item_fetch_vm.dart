@@ -128,7 +128,7 @@ class FoodItemsVM extends ChangeNotifier {
       final response = await _apiService.postRequest<MakePaymentRequestModel, MakePaymentResponseModel>(
         url: url,
         headers: {
-          'X-Forward-Proxy-Action': 'get_item_by_id'
+          'X-Forward-Proxy-Action': 'make_payment'
         },
         requestBody: request,
         toJson: (req) => req.toJson(),

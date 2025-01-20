@@ -33,9 +33,85 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
         List<Cuisines>? cuisines = viewModel.itemsListModel?.cuisines;
         return SafeArea(
           child: Scaffold(
-            body: 
-              viewModel.state == RequestState.loading ? const FoodLoader()
-            : viewType(viewModel,cuisines)
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () {},
+              ),
+              title: Text(
+                'Food Court',
+                style: TextStyle(color: Colors.black),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.shopping_cart, color: Colors.black),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            body: Column(
+              children: [
+                // Search Bar with Filter and Sort Buttons
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: () {
+                          // Handle filter button functionality
+                          print('Filter button pressed');
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.filter_list,
+                          color: Colors.black, // Adjust the icon color if needed
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      // Sort Button
+                      OutlinedButton(
+                        onPressed: () {
+                          // Handle sort button functionality
+                          print('Sort button pressed');
+                        },
+                        style: OutlinedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.swap_vert,
+                          color: Colors.black, // Adjust the icon color if needed
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  child: viewModel.state == RequestState.loading ? const FoodLoader() : viewType(viewModel,cuisines)
+                ),
+                
+              ],
+            )
+              
           ),
         );
       }

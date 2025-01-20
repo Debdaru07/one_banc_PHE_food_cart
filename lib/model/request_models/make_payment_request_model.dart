@@ -1,9 +1,12 @@
 class MakePaymentRequestModel {
   String? totalAmount;
   int? totalItems;
+  String? gst;
+  String? cgst;
+  String? sumAmount;
   List<Data>? data;
 
-  MakePaymentRequestModel({this.totalAmount, this.totalItems, this.data});
+  MakePaymentRequestModel({this.totalAmount, this.totalItems, this.data, this.gst, this.cgst, this.sumAmount});
 
   MakePaymentRequestModel.fromJson(Map<String, dynamic> json) {
     totalAmount = json['total_amount'];
@@ -32,9 +35,12 @@ class MakePaymentRequestModel {
       double sum = data!.fold(0, (previousValue, item) {
         return previousValue + (item.itemPrice ?? 0) * (item.itemQuantity ?? 1);
       });
-      double gst = sum * 0.025;
-      double cgst = sum * 0.025;
-      totalAmount = (sum + gst + cgst).toStringAsFixed(2); 
+      double localGst = sum * 0.025;
+      double localCgst = sum * 0.025;
+      sumAmount = '${sum.toStringAsFixed(2)}';
+      gst = '${localGst.toStringAsFixed(2)}';
+      cgst = '${localCgst.toStringAsFixed(2)}';
+      totalAmount = (sum + localGst + localCgst).toStringAsFixed(2); 
     }
   }
 

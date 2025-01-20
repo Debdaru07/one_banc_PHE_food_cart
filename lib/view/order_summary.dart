@@ -15,6 +15,8 @@ class OrderSummaryPage extends StatefulWidget {
 }
 
 class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  double gst = 0.0;
+  double cgst = 0.0;
 
   @override
   void initState() {
@@ -49,7 +51,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Item Details Section
             Text( 'Item Summary', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 8),
             (widget.itemDetails.data ?? []).isEmpty
@@ -64,16 +65,44 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   ],
                   rows: (widget.itemDetails.data ?? []).map((item) {
                     return DataRow(cells: [
-                      DataCell(Text('${item.itemId ?? 'Unknown'}')), 
-                      DataCell(Text('${item.cuisineId ?? 'Unknown'}')), 
-                      DataCell(Text('\$${item.itemPrice}')),
+                      DataCell(
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('${item.itemId ?? 'Unknown'}'),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('${item.cuisineId ?? 'Unknown'}'),
+                        ),
+                      ),
+                      DataCell(
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('\$${item.itemPrice}'),
+                        ),
+                      ),
                     ]);
                   }).toList(),
                 ),
               ),
-            Text('Quantity: ${widget.itemDetails.totalItems}'),
-            const SizedBox(height: 24),
-            Text( 'Total Amount: \$${widget.itemDetails.totalAmount}', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+            if((widget.itemDetails.data ?? []).isNotEmpty) Divider(color: Colors.grey[700], height: 1,),
+            const SizedBox(height: 12),
+            commonLabelValueRow('Total Quantity', '${widget.itemDetails.totalItems}'),
+            const SizedBox(height: 12),
+            commonLabelValueRow('Sum Total', '${widget.itemDetails.sumAmount}'),
+            const SizedBox(height: 12),
+            commonLabelValueRow('GST (2.5%)', '${widget.itemDetails.gst}'),
+            const SizedBox(height: 12),
+            commonLabelValueRow('CGST (2.5%)', '${widget.itemDetails.cgst}'),
+            const SizedBox(height: 12),
+            Divider(color: Colors.grey[700], height: 1,),
+            const SizedBox(height: 12),
+            commonLabelValueRow('Total Amount Payable', '${widget.itemDetails.totalAmount}'),
             const Spacer(),
             ElevatedButton(
               onPressed: () => _makePayment(context),
@@ -89,4 +118,19 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
       ),
     );
   }
+
+  Widget commonLabelValueRow(String label, String value) => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        // Value
+        Text(
+          value,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
 }

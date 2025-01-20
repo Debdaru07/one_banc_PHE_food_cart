@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,14 +41,17 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                 icon: Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {},
               ),
-              title: Text(
-                'Food Court',
-                style: TextStyle(color: Colors.black),
-              ),
+              title: Text('Food Court',style: TextStyle(color: Colors.black)),
               actions: [
-                IconButton(
-                  icon: Icon(Icons.shopping_cart, color: Colors.black),
-                  onPressed: () {},
+                Stack(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.shopping_cart, color: Colors.black),
+                      onPressed: () {},
+                    ),
+                    // Badge overlay
+                    showCartItems(0),
+                  ],
                 ),
               ],
             ),
@@ -71,25 +76,17 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                       SizedBox(width: 8),
                       OutlinedButton(
                         onPressed: () {
-                          // Handle filter button functionality
-                          print('Filter button pressed');
+                          log('Filter button pressed');
                         },
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.filter_list,
-                          color: Colors.black, // Adjust the icon color if needed
-                        ),
+                        style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
+                        child: Icon(Icons.filter_list,color: Colors.black),
                       ),
                       SizedBox(width: 8),
                       // Sort Button
                       OutlinedButton(
                         onPressed: () {
                           // Handle sort button functionality
-                          print('Sort button pressed');
+                          log('Sort button pressed');
                         },
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -119,5 +116,18 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
   }
 
   Widget viewType(FoodItemsVM viewModel, List<Cuisines>? foodList) => CuisinesAccordion(foodList: foodList ?? [],); 
+
+  Widget showCartItems(int items) {
+    return Positioned(
+      right: 4,
+      top: 4,
+      child: Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(color: Colors.red,shape: BoxShape.circle,),
+        child: Text('0',style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold,),
+        ),
+      ),
+    );
+  }
 
 }

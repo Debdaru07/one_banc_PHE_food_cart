@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import '../app_url.dart';
 import '../model/request_models/item_details_request_body_mode.l.dart';
+import '../model/request_models/item_filter_request_model.dart';
 import '../model/request_models/item_list_request_body_model.dart';
+import '../model/request_models/make_payment_request_model.dart';
 import '../model/response_models/item_details_model.dart';
+import '../model/response_models/item_filter_model.dart';
 import '../model/response_models/item_list_model.dart';
+import '../model/response_models/make_payment_model.dart';
 import '../service/common_post_api_handler.dart';
 
 class FoodItemsVM extends ChangeNotifier {
@@ -57,7 +61,7 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Function 2: Fetch item by filter
+  // Function 2: Fetch item by ID
   Future<void> getItemById(ItemListDetailsRequestBodyModel request) async {
     var url = AppUrl().itemDetailsEndPointURL;
     _updateState(RequestState.loading);
@@ -78,39 +82,62 @@ class FoodItemsVM extends ChangeNotifier {
     }
   }
 
-  // // Function 3: Fetch item by ID
-  // Future<void> getItemById(IdRequest request) async {
-  //   const url = 'https://uat.onebanc.ai/emulator/interview/get_item_by_id';
-  //   try {
-  //     final response = await _apiService.postRequest<IdRequest, ItemResponse>(
-  //       url: url,
-  //       headers: {}, // Add any custom headers if required
-  //       requestBody: request,
-  //       toJson: (req) => req.toJson(), // Convert request model to JSON
-  //       fromJson: (json) => ItemResponse.fromJson(json), // Parse response JSON
-  //     );
-  //     _responseData = response; // Save response
-  //     _updateState(RequestState.completed);
-  //   } catch (e) {
-  //     _updateState(RequestState.error, errorMessage: e.toString());
-  //   }
-  // }
+  ItemsFilterModel? _itemsFilterModel;
+  ItemsFilterModel? get itemsFilterModel => _itemsFilterModel;
 
-  // // Function 4: Make payment
-  // Future<void> makePayment(PaymentRequest request) async {
-  //   const url = 'https://uat.onebanc.ai/emulator/interview/make_payment';
-  //   try {
-  //     final response = await _apiService.postRequest<PaymentRequest, PaymentResponse>(
-  //       url: url,
-  //       headers: {}, // Add any custom headers if required
-  //       requestBody: request,
-  //       toJson: (req) => req.toJson(), // Convert request model to JSON
-  //       fromJson: (json) => PaymentResponse.fromJson(json), // Parse response JSON
-  //     );
-  //     _responseData = response; // Save response
-  //     _updateState(RequestState.completed);
-  //   } catch (e) {
-  //     _updateState(RequestState.error, errorMessage: e.toString());
-  //   }
-  // }
+  setItemsFilterModel(ItemsFilterModel? val) {
+    _itemsFilterModel = val;
+    notifyListeners();
+  }
+
+  // Function 3: Fetch item by filter
+  Future<void> getItemByFilter(ItemsFilterRequestModel request) async {
+    var url = AppUrl().filterEndPointURL; 
+    _updateState(RequestState.loading);
+    try {
+      final response = await _apiService.postRequest<ItemsFilterRequestModel, ItemsFilterModel>(
+        url: url,
+        headers: {
+          'X-Forward-Proxy-Action': 'get_item_by_id'
+        },
+        requestBody: request,
+        toJson: (req) => req.toJson(),
+        fromJson: (json) => ItemsFilterModel.fromJson(json),
+      );
+      setItemsFilterModel(response);
+      _updateState(RequestState.completed);
+    } catch (e) {
+      _updateState(RequestState.error, errorMessage: e.toString());
+    }
+  }
+
+
+  MakePaymentResponseModel? _makePaymentRequestModel;
+  MakePaymentResponseModel? get makePaymentRequestModel => _makePaymentRequestModel;
+  
+  setmakePaymentRequestModel(MakePaymentResponseModel val) {
+    _makePaymentRequestModel = val;
+    notifyListeners();
+  }
+
+  // Function 4: Make payment
+  Future<void> makePayment(MakePaymentRequestModel request) async {
+    var url = AppUrl().makePaymentEndPointURL; 
+    _updateState(RequestState.loading);
+    try {
+      final response = await _apiService.postRequest<MakePaymentRequestModel, MakePaymentResponseModel>(
+        url: url,
+        headers: {
+          'X-Forward-Proxy-Action': 'get_item_by_id'
+        },
+        requestBody: request,
+        toJson: (req) => req.toJson(),
+        fromJson: (json) => MakePaymentResponseModel.fromJson(json), 
+      );
+      setmakePaymentRequestModel(response);
+      _updateState(RequestState.completed);
+    } catch (e) {
+      _updateState(RequestState.error, errorMessage: e.toString());
+    }
+  }
 }

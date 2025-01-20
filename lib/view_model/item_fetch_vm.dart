@@ -34,6 +34,14 @@ class FoodItemsVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<String> _cuisineTypes = [];
+  List<String> get cuisineTypes => _cuisineTypes;
+
+  setCuisines(List<String> val) {
+    _cuisineTypes = val;
+    notifyListeners();
+  }
+
   // Function 1: Fetch all items
   Future<void> fetchItemList(ItemListRequestModel requestModel) async {
     var url = AppUrl().itemsEndPointURL;
@@ -48,11 +56,24 @@ class FoodItemsVM extends ChangeNotifier {
         toJson: (_) => requestModel.toJson(),
         fromJson: (json) => ItemsListModel.fromJson(json),
       );
+      setCuisines(getCuisineNames(response));
       setItemsListModel(response);
       _updateState(RequestState.completed);
     } catch (e) {
       _updateState(RequestState.error, errorMessage: e.toString());
     }
+  }
+
+  List<String> getCuisineNames(ItemsListModel itemsListModel) {
+    List<String> cuisineNames = [];
+    if (itemsListModel.cuisines != null) {
+      for (var cuisine in itemsListModel.cuisines!) {
+        if (cuisine.cuisineName != null) {
+          cuisineNames.add(cuisine.cuisineName!);
+        }
+      }
+    }
+    return cuisineNames;
   }
 
   ItemDetailsResponseModel? _itemDetails;

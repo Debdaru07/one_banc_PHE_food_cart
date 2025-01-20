@@ -40,6 +40,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   mockito: ^5.4.4
   build_runner: ^2.3.3
+  dropdown_search: ^6.0.2
+
   # flutter_dotenv: ^5.0.2
 
 dev_dependencies:

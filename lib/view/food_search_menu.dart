@@ -94,23 +94,6 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                         style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
                         child: Icon(Icons.filter_list,color: Colors.black),
                       ),
-                      // SizedBox(width: 8),
-                      // // Sort Button
-                      // OutlinedButton(
-                      //   onPressed: () {
-                      //     // Handle sort button functionality
-                      //     log('Sort button pressed');
-                      //   },
-                      //   style: OutlinedButton.styleFrom(
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(8.0),
-                      //     ),
-                      //   ),
-                      //   child: Icon(
-                      //     Icons.swap_vert,
-                      //     color: Colors.black, // Adjust the icon color if needed
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

@@ -33,6 +33,7 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
               child: Image.network(
                 widget.itemDetails.itemImageUrl ?? '',
                 fit: BoxFit.cover, 
+                errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
               ),
             ),
           ),

@@ -136,15 +136,15 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                 const SizedBox(height: 12),
                 commonLabelValueRow('Total Quantity', '${itemDetails.totalItems}'),
                 const SizedBox(height: 12),
-                commonLabelValueRow('Sum Total', '₹ ${itemDetails.sumAmount}'),
+                commonLabelValueRow('Net Total', '₹ ${itemDetails.sumAmount}'),
                 const SizedBox(height: 12),
-                commonLabelValueRow('GST (2.5%)', '₹ ${itemDetails.gst}'),
+                commonLabelValueRow('GST (2.5%)', '₹ ${itemDetails.gst}', style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.normal, color: Colors.grey[700])),
                 const SizedBox(height: 12),
-                commonLabelValueRow('CGST (2.5%)', '₹ ${itemDetails.cgst}'),
+                commonLabelValueRow('CGST (2.5%)', '₹ ${itemDetails.cgst}',style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.normal, color: Colors.grey[700])),
                 const SizedBox(height: 12),
                 Divider(color: Colors.grey[700], height: 1,),
                 const SizedBox(height: 12),
-                commonLabelValueRow('Total Amount Payable', '₹ ${itemDetails.totalAmount}'),
+                commonLabelValueRow('Grand total', '₹ ${itemDetails.totalAmount}',style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w500)),
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () => callPaymentPOSTAPI(context),
@@ -182,17 +182,17 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     return groupedItems.values.toList();
   }
 
-  Widget commonLabelValueRow(String label, String value) => Row(
+  Widget commonLabelValueRow(String label, String value, {TextStyle? style}) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: style ?? Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         // Value
         Text(
           value,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: style ?? Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

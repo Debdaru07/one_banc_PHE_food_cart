@@ -9,6 +9,7 @@ import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
 import '../view_model/item_fetch_vm.dart';
 import 'helper_widget.dart';
+import 'lanugage_selector.dart';
 import 'order_summary.dart';
 import 'search.dart';
 
@@ -39,23 +40,21 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () {},
-              ),
               title: Row(
                 children: [
+                  const SizedBox(width: 5,),
                   ClipOval(
                     child: Padding(
                       padding: const EdgeInsets.all(1.0),
-                      child: Image.asset('assets/images/onebanc_logo.jpeg', width: 40, height: 40,fit: BoxFit.cover,),
+                      child: Image.asset('assets/images/onebanc_logo.jpeg', width: 45, height: 45,fit: BoxFit.cover,),
                     )
                   ), 
-                  const SizedBox(width: 5,),
+                  const SizedBox(width: 10,),
                   Text('Food Court',style: TextStyle(color: Colors.black)),
                 ],
               ),
               actions: [
+                LanguageSelector(onLanguageChanged: (val) {},),
                 Stack(
                   children: [
                     IconButton(
@@ -68,6 +67,7 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                     showCartItems(viewModel.cartItems.length),
                   ],
                 ),
+                const SizedBox(width: 5,),
               ],
             ),
             body: Column(

@@ -99,7 +99,6 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                             log('not done anything');
                           }
                           setState(() {});
-                          log('viewModel.selectedFilterItems?.isFilterSelected :- ${viewModel.selectedFilterItems?.isFilterSelected}');
                         },
                         style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)), iconColor: viewModel.selectedFilterItems != ItemsFilterRequestModel() ?  Colors.blue : Colors.grey[600]),
                         child: Icon((viewModel.selectedFilterItems?.isFilterSelected == true || result == true) ?  Icons.filter_alt : Icons.filter_alt_outlined, color: Colors.black),

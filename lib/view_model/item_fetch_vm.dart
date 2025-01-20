@@ -132,7 +132,7 @@ class FoodItemsVM extends ChangeNotifier {
         headers: {
           'X-Forward-Proxy-Action': 'make_payment'
         },
-        requestBody: request,
+        requestBody: consolidateItems(request),
         toJson: (req) => req.toJson(),
         fromJson: (json) => MakePaymentResponseModel.fromJson(json), 
       );
@@ -188,4 +188,29 @@ class FoodItemsVM extends ChangeNotifier {
     });
     return check;
   }
+
+  MakePaymentRequestModel consolidateItems(MakePaymentRequestModel model) {
+    if (model.data == null || model.data!.isEmpty) {
+      return model;
+    }
+    final Map<String, Data> uniqueItemsMap = {};
+    for (var item in model.data!) {
+      String key = '${item.cuisineId}-${item.itemId}';
+      if (uniqueItemsMap.containsKey(key)) {
+        uniqueItemsMap[key]!.itemQuantity = (uniqueItemsMap[key]!.itemQuantity ?? 0) + (item.itemQuantity ?? 0);
+      } else {
+        uniqueItemsMap[key] = Data(
+          cuisineId: item.cuisineId,
+          itemId: item.itemId,
+          itemPrice: item.itemPrice,
+          itemQuantity: item.itemQuantity,
+        );
+      }
+    }
+    model.data = uniqueItemsMap.values.toList();
+    model.calculateTotalAmount();
+    model.calculateTotalItems();
+    return model;
+  }
+
 }

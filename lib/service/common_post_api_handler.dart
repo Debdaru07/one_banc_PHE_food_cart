@@ -27,14 +27,15 @@ class ApiService {
       'Content-Type': 'application/json',
       'X-Partner-API-Key': '${Constants().client_key}',
     });
-    log('url :- $url');
     try {
+      log('requestBody :- ${toJson(requestBody)}');
+      log('url :- $url');
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
         body: jsonEncode(toJson(requestBody)),
       );
-      if (response. statusCode >= 200 && response.statusCode < 300) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         _setState(RequestState.completed);
         return fromJson(jsonDecode(response.body));
       } else {

@@ -77,17 +77,6 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                   child: Row(
                     children: [
-                      // Expanded(
-                      //   child: TextField(
-                      //     decoration: InputDecoration(
-                      //       hintText: 'Search',
-                      //       prefixIcon: Icon(Icons.search),
-                      //       border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.circular(8.0),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       SearchScreen(),
                       SizedBox(width: 8),
                       OutlinedButton(

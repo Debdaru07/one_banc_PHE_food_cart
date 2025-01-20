@@ -8,6 +8,7 @@ import '../model/request_models/item_list_request_body_model.dart';
 import '../model/response_models/item_list_model.dart';
 import '../service/common_post_api_handler.dart';
 import '../view_model/item_fetch_vm.dart';
+import 'food_filter_page.dart';
 import 'helper_widget.dart';
 import 'lanugage_selector.dart';
 import 'order_summary.dart';
@@ -80,29 +81,38 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
                       SearchScreen(),
                       SizedBox(width: 8),
                       OutlinedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           log('Filter button pressed');
+                          // FilterPage
+                          var result = await showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                            builder: (context) => FractionallySizedBox(
+                              heightFactor: 1,
+                              child: FilterPage(onApplyFilter: (p0) {},)
+                            ),
+                          );
                         },
                         style: OutlinedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
                         child: Icon(Icons.filter_list,color: Colors.black),
                       ),
-                      SizedBox(width: 8),
-                      // Sort Button
-                      OutlinedButton(
-                        onPressed: () {
-                          // Handle sort button functionality
-                          log('Sort button pressed');
-                        },
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.swap_vert,
-                          color: Colors.black, // Adjust the icon color if needed
-                        ),
-                      ),
+                      // SizedBox(width: 8),
+                      // // Sort Button
+                      // OutlinedButton(
+                      //   onPressed: () {
+                      //     // Handle sort button functionality
+                      //     log('Sort button pressed');
+                      //   },
+                      //   style: OutlinedButton.styleFrom(
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(8.0),
+                      //     ),
+                      //   ),
+                      //   child: Icon(
+                      //     Icons.swap_vert,
+                      //     color: Colors.black, // Adjust the icon color if needed
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

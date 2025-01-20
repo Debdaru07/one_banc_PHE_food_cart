@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../helpers/snackbar_bottom.dart';
 import '../model/request_models/make_payment_request_model.dart';
 import '../view_model/item_fetch_vm.dart';
+import 'food_search_menu.dart';
 
 class OrderSummaryPage extends StatefulWidget {
   final MakePaymentRequestModel itemDetails;
@@ -35,6 +36,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     );
     if (viewModel.makePaymentResponseModel?.responseCode == 200) {
       showCustomSnackbar(context, text: "Order placed successfully!");
+      await Future.delayed(const Duration(milliseconds: 800));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FoodDeliveryListing()));
     } else {
       showCustomSnackbar(context, text: "Couldn't place order", textColor: Colors.red);
     }

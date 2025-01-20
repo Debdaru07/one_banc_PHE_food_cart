@@ -1,57 +1,112 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:munch/model/request_models/item_list_request_body_model.dart';
+import 'package:munch/model/request_models/make_payment_request_model.dart';
+import 'package:munch/model/response_models/item_details_model.dart';
+import 'package:munch/model/response_models/item_list_model.dart';
+import 'package:munch/service/common_post_api_handler.dart';
+import 'package:munch/view_model/item_fetch_vm.dart';
+
+import 'api_service_test.mocks.dart';
+
 
 void main() {
+  late FoodItemsVM viewModel;
+  late MockApiService mockApiService;
 
   setUp(() {
+    mockApiService = MockApiService();
+    viewModel = FoodItemsVM();
   });
 
-  // Will Optimize later for the new view model functions as well.
-  
-  // group('FoodViewModel Tests', () {
-  //   test('Initial state should have loading as false', () {
-  //     expect(foodViewModel.loading, false);
-  //   });
+  group('FoodItemsVM Tests', () {
+    test('Initial state is completed', () {
+      expect(viewModel.state, RequestState.completed);
+      expect(viewModel.errorMessage, '');
+      expect(viewModel.itemsListModel, isNull);
+    });
 
-  //   test('setLoading should update loading state', () {
-  //     foodViewModel.setLoading(true);
-  //     expect(foodViewModel.loading, true);
-  //   });
+    test('fetchItemList updates state and itemsListModel on success', () async {
+      // Mock data
+      final mockRequest = ItemListRequestModel();
+      final mockResponse = ItemsListModel(responseCode: 200);
 
-  //   test('setFoodItems should update filteredFoodList', () {
-  //     final foodItems = [
-  //       Food(name: "Test Food", category: "Test", businessName: "Test Business", foodType: "Veg", ratings: "5.0", thumNailAssetPath: "assets/images/test.jpg", price: '100'),
-  //     ];
-  //     foodViewModel.setFoodItems(foodItems);
-  //     expect(foodViewModel.filteredFoodList, foodItems);
-  //   });
+      // when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
+      //   url: '',
+      //   headers: {},
+      //   requestBody: ItemListRequestModel(),
+      //   toJson: (val) => val.toJson() ,
+      //   fromJson: (val) => ItemsListModel.fromJson(val),
+      // )).thenAnswer((_) async => mockResponse);
 
-  //   test('searchFood should filter food items based on query', () async {
-  //     foodViewModel.searchFood('burger');
-  //     await Future.delayed(const Duration(seconds: 2)); 
-  //     expect(foodViewModel.filteredFoodList.length, 3);
-  //   });
+      when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
+        url: anyNamed('url'),
+        headers: anyNamed('headers'),
+        requestBody: anyNamed('requestBody'),
+        toJson: anyNamed('toJson'),
+        fromJson: anyNamed('fromJson'),
+      )).thenAnswer((_) async => mockResponse);
 
-  //   test('toggleViewType should toggle between list and grid view types', () {
-  //     expect(foodViewModel.viewType, ViewType.grid);
-  //     foodViewModel.toggleViewType();
-  //     expect(foodViewModel.viewType, ViewType.list);
-  //     foodViewModel.toggleViewType();
-  //     expect(foodViewModel.viewType, ViewType.grid);
-  //   });
 
-  //   test('setCartItems should add food item to cart', () {
-  //     final foodItem = Food(name: "Classic Cheeseburger", category: "Burger", businessName: "Burger Palace", foodType: "Non-Veg", ratings: "4.5", thumNailAssetPath: "assets/images/burger1.jpg", price: '150',);
-  //     foodViewModel.setCartItems(foodItem);
-  //     expect(foodViewModel.cartItems.length, 1);
-  //     expect(foodViewModel.cartItems[0], foodItem);
-  //   });
+      await viewModel.fetchItemList(mockRequest);
 
-  //   test('resetCartItems should clear the cart', () {
-  //     final foodItem = Food(name: "Classic Cheeseburger", category: "Burger", businessName: "Burger Palace", foodType: "Non-Veg", ratings: "4.5", thumNailAssetPath: "assets/images/burger1.jpg", price: '150',);
-  //     foodViewModel.setCartItems(foodItem);
-  //     expect(foodViewModel.cartItems.length, 1);
-  //     foodViewModel.resetCartItems();
-  //     expect(foodViewModel.cartItems.length, 0);
-  //   });
-  // });
+      expect(viewModel.state, RequestState.completed);
+      expect(viewModel.itemsListModel, isNotNull);
+      expect(viewModel.itemsListModel?.responseCode, 200);
+    });
+
+    test('fetchItemList handles errors', () async {
+      final mockRequest = ItemListRequestModel();
+
+      when(mockApiService.postRequest<ItemListRequestModel, ItemsListModel>(
+        url: '',
+        headers: {},
+        requestBody: ItemListRequestModel(),
+        toJson: (val) => {},
+        fromJson: (val) => ItemsListModel(),
+      )).thenThrow(Exception('Network Error'));
+
+      await viewModel.fetchItemList(mockRequest);
+
+      expect(viewModel.state, RequestState.error);
+      expect(viewModel.errorMessage, contains('Network Error'));
+    });
+
+    test('Cart operations work as expected', () {
+      final mockItem = Data(cuisineId: 1, itemId: 101);
+
+      viewModel.setCartItems(mockItem);
+      expect(viewModel.cartItems.length, 1);
+
+      viewModel.incrementCartValue();
+      expect(viewModel.addToCartValue, 1);
+
+      viewModel.decrementCartValue();
+      expect(viewModel.addToCartValue, 0);
+
+      viewModel.popLastCartItem();
+      expect(viewModel.cartItems, isEmpty);
+    });
+
+    test('checkIfFoodExistsInCart returns true for existing item', () {
+      final mockItem = Data(cuisineId: 1, itemId: 101);
+      viewModel.setCartItems(mockItem);
+
+      final mockDetails = ItemDetailsResponseModel(cuisineId: '1', itemId: 101);
+      final exists = viewModel.checkIfFoodExistsInCart(mockDetails);
+
+      expect(exists, true);
+    });
+
+    test('checkIfFoodExistsInCart returns false for non-existing item', () {
+      final mockItem = Data(cuisineId: 1, itemId: 101);
+      viewModel.setCartItems(mockItem);
+
+      final mockDetails = ItemDetailsResponseModel(cuisineId: '2', itemId: 202);
+      final exists = viewModel.checkIfFoodExistsInCart(mockDetails);
+
+      expect(exists, false);
+    });
+  });
 }

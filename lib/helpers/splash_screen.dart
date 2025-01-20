@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/logo.png',
+              'assets/images/onebanc_logo.jpeg',
               width: 150, // Set your logo dimensions
             ),
             const SizedBox(height: 20),

@@ -39,21 +39,19 @@ class _FoodDeliveryListingState extends State<FoodDeliveryListing> {
         List<Cuisines>? cuisines = viewModel.itemsListModel?.cuisines;
         return SafeArea(
           child: Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: Colors.white,
-              title: Row(
+              leadingWidth: 45,
+              leading: Row(
                 children: [
-                  const SizedBox(width: 5,),
+                  const SizedBox(width: 4,),
                   ClipOval(
-                    child: Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Image.asset('assets/images/onebanc_logo.jpeg', width: 45, height: 45,fit: BoxFit.cover,),
-                    )
+                    child: Image.asset('assets/images/onebanc_logo.jpeg', width: 40, height: 40,fit: BoxFit.cover,)
                   ), 
-                  const SizedBox(width: 10,),
-                  Text('Food Court',style: TextStyle(color: Colors.black)),
                 ],
               ),
+              title: Text('Food Court',style: TextStyle(color: Colors.grey[700], fontSize: 20)),
               actions: [
                 LanguageSelector(onLanguageChanged: (val) {},),
                 Stack(

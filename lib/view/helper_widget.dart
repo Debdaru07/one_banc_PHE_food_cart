@@ -42,6 +42,7 @@ class _AccordionCardState extends State<AccordionCard> {
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      color: const Color.fromARGB(255, 236, 228, 204),
       child: Column(
         children: [
           // Accordion Header

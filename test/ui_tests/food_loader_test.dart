@@ -15,7 +15,7 @@ void main() {
     expect(find.byType(Image), findsOneWidget);
     final Image image = tester.widget(find.byType(Image));
     expect(image.image, isInstanceOf<AssetImage>());
-    expect((image.image as AssetImage).assetName, 'assets/images/loading_screen.jpg');
+    expect((image.image as AssetImage).assetName, 'assets/images/onebanc_logo.jpeg');
   });
 
   testWidgets('FoodLoader rotation animation plays correctly', (WidgetTester tester) async {

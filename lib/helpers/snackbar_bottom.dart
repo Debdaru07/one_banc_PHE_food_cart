@@ -17,7 +17,7 @@ void showCustomSnackbar(BuildContext context, {required String text, Color? text
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: ClipOval(
                   child: Image.asset(
-                    'assets/images/splash.png',
+                    'assets/images/onebanc_logo.jpeg',
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
